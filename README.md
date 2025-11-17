@@ -202,7 +202,8 @@ grid_options:
 
 Two way audio should now be possible when home assistant is accessed via https:
 
-<img width="1057" height="468" alt="image" src="https://github.com/user-attachments/assets/7e5d8fba-4ab1-4e33-953a-bd5c76bbabcf" />
+<img width="1053" height="590" alt="image" src="https://github.com/user-attachments/assets/a727794d-4a81-472f-b1b7-3855650632e8" />
+
 
 
 The rest of the functionality can be made available by installing the reolink integration and setting up the camera: https://www.home-assistant.io/integrations/reolink/
