@@ -4,12 +4,13 @@ Reolink has a very good home assistant integration for the E1 Zoom IP Camerpa. H
 So you can either use homeassistant without two way talk but with baby cry detection or you can use the mobile/desktop app without baby cry sound detection but with two way talk.
 Since I don't like to install additional apps - here is how to get two way talk operational in homeassistant. And along side we will be solving another issue: How can we make home assistant reachable via http AND https at the same time.
 
-A) Enable https for home assistant (in this how-to https and http will be operational at the same time)
-B) Install Homeassistant addons Frigate and Advanced Camera Card for Video support and Two Way Talk
+1. Enable https for home assistant (in this how-to https and http will be operational at the same time
+2. Install Homeassistant addons Frigate and Advanced Camera Card for Video support and Two Way Talk
 
 
 # Enable http AND https via reverse proxy NGINX
-Follow this description: https://gist.github.com/tiagofreire-pt/4920be8d03a3dfa8201c6afedd00305e
+The following description is derived from: https://gist.github.com/tiagofreire-pt/4920be8d03a3dfa8201c6afedd00305e
+
 Create Root Key
 ~~~
 sudo openssl genrsa -des3 -out rootCA.key 4096
@@ -100,8 +101,16 @@ sudo chmod 600 /usr/share/hassio/ssl/fullchain.pem /usr/share/hassio/ssl/privkey
 Now install NGINX Addon (see home assistant addons / https://github.com/home-assistant/addons/tree/master/nginx_proxy) and configure the plugin as follows:
 <img width="960" height="1114" alt="image" src="https://github.com/user-attachments/assets/6bd9a55d-b85a-4412-b8a5-478858948292" />
 
-Next start the plugin and hit the checkbox start at boot then restart home assistant.
+Next start the plugin and hit the checkbox "start at boot" then restart home assistant.
 <img width="895" height="427" alt="image" src="https://github.com/user-attachments/assets/2b06454e-7d24-4b64-9958-7ad639d531ea" />
+
+Copy and install rootCA.pem to all devices that will access homeassistant. I used WinSCP to connect to my homeassistant server and exported the file to my pc and smartphone.
+Under Android the certificate can be installed by searching "install certificate" in the settings menue and then install rootCA.pem
+
+Now homeassistant can be reached either via:
+1. http://homeassistant_hostename.local
+2. https://homeassistant_hostename.local
+
 
 
 
