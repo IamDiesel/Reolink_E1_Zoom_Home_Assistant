@@ -111,6 +111,11 @@ Now homeassistant can be reached either via:
 1. http://homeassistant_hostename.local
 2. https://homeassistant_hostename.local
 
+If you want to access home assistant via https from the companion app just open the companion app on your mobile phone, go to settings --> your phone --> and set the homeassistant url to:
+ ~~~
+https://homeassistant_hostename.local
+~~~
+
 
 
 
