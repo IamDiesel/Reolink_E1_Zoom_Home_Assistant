@@ -78,11 +78,32 @@ Where 192.168.XXX.XXX is your home assistant ip address.
 
 Create the certificate key
 ~~~
-sudo openssl req -new -sha256 -nodes -out hassio.csr -newkey rsa:2048 -keyout hassio.key -config <( cat rootCA.csr.cnf )
+openssl req -new -sha256 -nodes -out hassio.csr -newkey rsa:2048 -keyout hassio.key -config <( cat rootCA.csr.cnf )
 ~~~
 
 Create the certificate itself
 ~~~
 sudo openssl x509 -req -in hassio.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out hassio.crt -days 3650 -sha256 -extfile v3.ext
 ~~~
+
+Copy and rename files to home assistant ssl folder (I'm using homeassistant supervised. The folder could be different for other home assistant installation methods):
+~~~
+sudo cp hassio.crt  /usr/share/hassio/ssl/fullchain.pem
+sudo cp hassio.key  /usr/share/hassio/ssl/privkey.pem 
+~~~
+
+Change Permissions:
+~~~
+sudo chmod 600 /usr/share/hassio/ssl/fullchain.pem /usr/share/hassio/ssl/privkey.pem
+~~~
+
+Now install NGINX Addon (see home assistant addons / https://github.com/home-assistant/addons/tree/master/nginx_proxy) and configure the plugin as follows:
+<img width="960" height="1114" alt="image" src="https://github.com/user-attachments/assets/6bd9a55d-b85a-4412-b8a5-478858948292" />
+
+Next start the plugin and hit the checkbox start at boot then restart home assistant.
+<img width="895" height="427" alt="image" src="https://github.com/user-attachments/assets/2b06454e-7d24-4b64-9958-7ad639d531ea" />
+
+
+
+
 
