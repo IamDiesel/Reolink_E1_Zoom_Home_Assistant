@@ -8,7 +8,7 @@ Since I don't like to install additional apps - here is how to get two way talk 
 2. Install Homeassistant addons Frigate and Advanced Camera Card for Video support and Two Way Talk
 
 
-# Enable http AND https via reverse proxy NGINX
+# 1. Enable http AND https via reverse proxy NGINX
 The following description is derived from: https://gist.github.com/tiagofreire-pt/4920be8d03a3dfa8201c6afedd00305e
 
 Create Root Key
@@ -115,6 +115,102 @@ If you want to access home assistant via https from the companion app just open 
  ~~~
 https://homeassistant_hostename.local
 ~~~
+
+# 2. Install Homeassistant addons Frigate and Advanced Camera Card for Video support and Two Way Talk
+
+Preparation:
+
+- Configure a static ip for your reolink camera in your router
+- enter your cameras ip in a browser and login as admin (initially no password is set)
+- create standard user with username and password (and also change the admin password (gear icon -> system -> user management)
+- configure reolink network settings (gear icon -> network -> advanced -> server settings)
+<img width="1056" height="961" alt="image" src="https://github.com/user-attachments/assets/ab342dad-9c40-4305-8438-acd8d2137344" />
+
+
+A. Install the frigate home assistant addon via HCAS. Details see
+~~~
+https://docs.frigate.video/integrations/home-assistant/
+~~~
+B. In the frigate addon go to settings -> Configuration editor
+<img width="335" height="641" alt="image" src="https://github.com/user-attachments/assets/7abf952a-0e29-4a81-825a-b80856e8de16" />
+
+
+Enter the following config (192.168.2.101 should of course be the ip of your camera)
+~~~
+mqtt:
+  enabled: false
+
+go2rtc:
+  streams:
+    # example for connecting to a standard Reolink camera
+    your_reolink_camera:
+       - rtsp://youruser:yourpassword@192.168.2.101/Preview_01_sub
+       - ffmpeg:rtsp://youruser:yourpassword@192.168.2.101/Preview_01_sub#audio=pcm#audio=volume
+#      - ffmpeg:http://192.168.2.101/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user=youruser&password=yourpassword#backchannel=1#audio=opus#unicast=true#proto=Onvif
+#      - rtsp://youruser:yourpassword!@192.168.2.101/Preview_01_sub
+#    your_reolink_camera_sub:
+#      - ffmpeg:rtsp://192.168.2.101/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user=youruser&password=yourpassword#backchannel=1
+
+cameras:
+  your_reolink_camera:
+    ffmpeg:
+      inputs:
+        #- path: rtsp://youruser:yourpassword@192.168.2.101:554?video=copy&audio=opus#backchannel=0
+        - path: rtsp://youruser:yourpassword@192.168.2.101/Preview_01_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+            - record
+            - audio
+      output_args:
+          record: preset-record-generic-audio-copy
+#        - path: rtsp://youruser:yourpassword@192.168.2.101:554?video=copy#backchannel=1
+#          input_args: preset-rtsp-restream
+#          roles:
+#            - detect
+
+
+detect:
+  enabled: true
+version: 0.16-0
+camera_groups:
+  Test:
+    order: 1
+    icon: LuAlbum
+    cameras: your_reolink_camera
+~~~
+
+C. Install advanced camera card addon via HACS (https://github.com/dermotduffy/advanced-camera-card/)
+D. In your Dashboard create a camera card with the following code:
+~~~
+type: custom:advanced-camera-card
+cameras:
+  - camera_entity: camera.your_reolink_camera
+    live_provider: go2rtc
+    go2rtc:
+      modes:
+        - webrtc
+menu:
+  buttons:
+    microphone:
+      enabled: true
+      type: toggle
+grid_options:
+  columns: 27
+  rows: auto
+~~~
+
+Two way audio should now be possible when home assistant is accessed via https:
+
+<img width="1057" height="468" alt="image" src="https://github.com/user-attachments/assets/7e5d8fba-4ab1-4e33-953a-bd5c76bbabcf" />
+
+
+The rest of the functionality can be made available by installing the reolink integration and setting up the camera: https://www.home-assistant.io/integrations/reolink/
+
+<img width="466" height="393" alt="image" src="https://github.com/user-attachments/assets/8ae8b62e-5064-4028-bbb5-c04747275c02" />
+
+
+
 
 
 
