@@ -79,7 +79,7 @@ Where 192.168.XXX.XXX is your home assistant ip address.
 
 Create the certificate key
 ~~~
-openssl req -new -sha256 -nodes -out hassio.csr -newkey rsa:2048 -keyout hassio.key -config <( cat rootCA.csr.cnf )
+sudo su -c 'openssl req -new -sha256 -nodes -out hassio.csr -newkey rsa:2048 -keyout hassio.key -config <( cat rootCA.csr.cnf )'
 ~~~
 
 Create the certificate itself
